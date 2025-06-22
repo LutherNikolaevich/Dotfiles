@@ -7,7 +7,7 @@
 | `zsh`        | ZSH shell configuration (plugins, themes, aliases) |
 | `alacritty`  | Alacritty terminal theming and keybindings |
 | `htop`                  | Resource monitor theme and layout |
-| `rofi`                  | Custom Rofi launcher theme |
+| `wofi`                  | Wayland-native app launcher theme |
 | `waybar`                | Wayland status bar styling and modules |
 | `sway` (`swaywm`)       | Tiling Wayland window manager config |
 | `fonts/Inter`           | UI font for GTK, Sway, and Waybar |
