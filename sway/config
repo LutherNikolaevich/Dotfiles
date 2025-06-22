@@ -236,6 +236,7 @@ bindsym $mod+r mode "resize"
     # Special key to take a screenshot with grim
     bindsym Print exec 'grim - | wl-copy'
     bindsym Shift+Print exec 'grim -g "$(slurp)" - | wl-copy'
+    bindsym Ctrl+Shift+s exec 'grim'
 
 #
 
@@ -251,8 +252,9 @@ client.unfocused #282828 #282828 #282828 #282828 #282828
 client.focused_inactive #282828 #282828 #282828 #282828 #282828
 client.focused_tab_title #282828 #282828 #282828 #282828 #282828
 
-# Clipman
-exec wl-paste -t text --watch clipman store --no-persist
+# Clapboard
+exec clapboard --record
+bindsym XF86Favorites exec clapboard
 
 # Status Bar:
 #
