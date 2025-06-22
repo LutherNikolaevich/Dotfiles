@@ -137,5 +137,4 @@ action = "ResetFontSize"
 
 [general]
 live_config_reload = true
-working_directory = "None"
-import = ["~/.config/alacritty/catppuccin-mocha.toml"]
+import = ["~/.config/alacritty/gruvbox_dark.toml"]
