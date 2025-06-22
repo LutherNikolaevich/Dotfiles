@@ -14,3 +14,8 @@
 | `fonts/JetBrainsMono`   | Terminal font (patched Nerd Font version) |
 
 ---
+
+# Colorscheme
+
+**Gruvbox**  
+A warm, retro-inspired color palette.
