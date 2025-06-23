@@ -12,6 +12,8 @@
 | `sway` (`swaywm`)       | Tiling Wayland window manager config |
 | `fonts/Inter`           | UI font for GTK, Sway, and Waybar |
 | `fonts/JetBrainsMono`   | Terminal font (patched Nerd Font version) |
+| `ly`                    | Lightweight TUI login manager |
+| `brillo`                    | Brightness controller |
 
 ---
 
