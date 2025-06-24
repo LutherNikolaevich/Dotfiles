@@ -236,6 +236,9 @@ client.focused_tab_title #282828 #282828 #282828 #282828 #282828
 exec clapboard --record
 bindsym XF86Favorites exec clapboard
 
+# Polkit
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
