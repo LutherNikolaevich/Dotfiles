@@ -224,8 +224,8 @@ bindsym $mod+r mode "resize"
 smart_borders on
 gaps inner 5
 gaps outer 3
-default_border pixel 3
-default_floating_border pixel 3
+default_border pixel 1
+for_window [floating] border pixel 1
 
 client.focused #ebdbb2 #ebdbb2 #ebdbb2 #ebdbb2 #ebdbb2
 client.unfocused #282828 #282828 #282828 #282828 #282828
