@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# SETTINGS
+unset XCURSOR_THEME
+export XCURSOR_THEME="Default"
+xset r rate 200 50
+xset s off
+xset -dpms
+xset s noblank
+
+# MONITOR SETUP
+MONITOR=$(xrandr | grep " connected" | head -n 1 | cut -d " " -f 1)
+
+if [ ! -z "$MONITOR" ]; then
+    xrandr --output "$MONITOR" --primary --mode 1920x1080 --rate 100 --pos 0x0 --rotate normal
+fi
+
+# START BACKGROUND APPS
+(
+  sxbar &
+  nt -r &
+  nitrogen --restore &
+  # rs &
+) &
