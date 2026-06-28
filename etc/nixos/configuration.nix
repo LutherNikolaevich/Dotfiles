@@ -10,21 +10,24 @@
     ./hardware-configuration.nix
   ];
 
+  # kernel
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   # AMD GPU
   hardware.graphics = 
-  {
+  { 
     enable = true;
-    extraPackages = with pkgs; [ rocmPackages.clr.icd ];
+    enable32Bit = true;
   };
   hardware.amdgpu.opencl.enable = true;
-  environment.variables = 
-  {
-    ROC_ENABLE_PRE_VEGA = "1";
-  };
+  environment.variables = { ROC_ENABLE_PRE_VEGA = "1"; };
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = 
+  {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
 
   # Hostname
   networking.hostName = "nixos";
@@ -55,8 +58,11 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  services = 
+  {
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
+  };
 
   # Gnome
   environment.gnome.excludePackages = with pkgs;
@@ -115,7 +121,7 @@
   {
     isNormalUser = true;
     description = "Lhord Czedrick";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "render" ];
     shell = pkgs.zsh;
     packages = with pkgs; 
     [
@@ -132,10 +138,7 @@
     syntaxHighlighting.enable = true;
     histSize = 10000;
     histFile = "$HOME/.zsh_history";
-    setOptions = 
-    [
-      "HIST_IGNORE_ALL_DUPS"
-    ];
+    setOptions = [ "HIST_IGNORE_ALL_DUPS" ];
     promptInit = ''
       source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
       [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
@@ -143,10 +146,7 @@
     ohMyZsh = 
     {
       enable = true;
-      plugins = 
-      [
-        "git"
-      ];
+      plugins = [ "git" ];
     };
   };  
 
@@ -183,6 +183,9 @@
     android-tools
     nodejs
     localsend
+    obs-studio
+    celluloid
+    recordbox
   ];
 
   # Garbage collector
@@ -208,7 +211,7 @@
   ''
     # MCHOSE Jet75-II Keyboard (Vendor: 41e4, Product: 211a)
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="41e4", ATTRS{idProduct}=="211a", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
-    # CX Wireless Mouse (Vendor: 373b, Product: 1085)
+    # VXE R1 (Vendor: 373b, Product: 1085)
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="373b", ATTRS{idProduct}=="1085", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
   '';
 
@@ -231,8 +234,11 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
-  services.flatpak.enable = true;
-  services.lact.enable = true;
+  services = 
+  {
+    flatpak.enable = true;
+    lact.enable = true;
+  };
 
   # Open ports in the firewall.
   networking.firewall = 
