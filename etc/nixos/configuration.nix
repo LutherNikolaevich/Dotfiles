@@ -36,11 +36,11 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
+
+  # Auto update
+  system.autoUpgrade.enable = true;
+  system.autoUpgrade.allowReboot = true;
 
   # Bootloader.
   boot.loader = 
@@ -53,48 +53,35 @@
   services.displayManager.cosmic-greeter.enable = true;
   services.desktopManager.cosmic.enable = true;
   services.system76-scheduler.enable = true;
-  environment.cosmic.excludePackages = with pkgs; [];
   environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
+  environment.cosmic.excludePackages = with pkgs; [
+    cosmic-edit
+    cosmic-term
+    cosmic-player
+    cosmic-reader
+    cosmic-wallpapers
+  ];
 
   # CUPS
   services.printing.enable = false;
 
-  # Debloat
-  programs.firefox.enable = false;
+  # DDC/CI
+  hardware.i2c.enable = true;
 
   # Firewall.
-  networking.firewall = 
-  {
+  networking.firewall.enable = false;
+
+  # Fish
+  programs.fish = {
     enable = true;
-    allowedTCPPorts = 
-    [
-      1714 1715 1716 1717 1718 1719 1720 1721 1722 1723 1724
-      1725 1726 1727 1728 1729 1730 1731 1732 1733 1734 1735
-      1736 1737 1738 1739 1740 1741 1742 1743 1744 1745 1746
-      1747 1748 1749 1750 1751 1752 1753 1754 1755 1756 1757
-      1758 1759 1760 1761 1762 1763 1764
-    ];
-    allowedUDPPorts = 
-    [
-      1714 1715 1716 1717 1718 1719 1720 1721 1722 1723 1724
-      1725 1726 1727 1728 1729 1730 1731 1732 1733 1734 1735
-      1736 1737 1738 1739 1740 1741 1742 1743 1744 1745 1746
-      1747 1748 1749 1750 1751 1752 1753 1754 1755 1756 1757
-      1758 1759 1760 1761 1762 1763 1764
-    ];
+    interactiveShellInit = ''
+      set fish_greeting # Disable greeting
+    '';
   };
 
-  # Flakes
-  nix = {
-    settings = {
-      # Enable flakes and new 'nix' command
-      experimental-features = "nix-command flakes";
-      # Opinionated: disable global registry
-      flake-registry = "";
-    };
-    # Opinionated: disable channels
-    channel.enable = false;
-  };
+  # Flatpak
+  services.flatpak.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-cosmic ];
 
   # Fonts
   fonts.packages = with pkgs;
@@ -112,57 +99,91 @@
   };
   nix.optimise.automatic = true;
 
+  # GTK and Qt
+  programs.dconf = {
+    enable = true;
+    profiles = {
+      user = {
+        databases = [
+          {
+            settings = {
+              "org/gnome/desktop/interface" = {
+                color-scheme = "prefer-dark";
+              };
+            };
+          }
+        ];
+      };
+    };
+  };
+  environment.sessionVariables = {
+  QT_STYLE_OVERRIDE = "adwaita-dark";
+    # for Qt6 specifically if adwaita-dark doesn't apply:
+    # QT_QPA_PLATFORMTHEME = "gtk3"; 
+  };
+
   # Hostname
   networking.hostName = "nixos";
+
+  # KDE connect
+  programs.kdeconnect.enable = true;
   
   # Kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # List packages installed in system profile. To search, run: nix search wget
   environment.systemPackages = with pkgs; 
   [
-    wget
-    neovim
-    brave
-    kitty
-    onlyoffice-desktopeditors
-    uget
-    songrec
-    lact
-    vscode
-    opencode
-    git
-    curl
-    fastfetch
     android-tools
-    nodejs
-    localsend
+    brave
     celluloid
+    curl
+    ddcutil
+    fastfetch
+    fishPlugins.done
+    fishPlugins.forgit
+    fishPlugins.fzf-fish
+    fishPlugins.grc
+    fishPlugins.hydro
+    fzf
+    git
+    grc
+    kitty
+    lact
+    localsend
+    nodejs
+    obsidian
+    onlyoffice-desktopeditors
+    opencode
+    polkit
+    qview
+    songrec
+    uget
+    vscode
+    wget
   ];
 
   # Locale
   i18n.defaultLocale = "en_US.UTF-8";
-  i18n.extraLocaleSettings = 
-  {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
+
+  # Neovim
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
   };
 
   # Networking
   networking.networkmanager.enable = true;
 
+  # Nixos
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Polkit
+  security.polkit.enable = true;
+
   # Services
   services = 
   {
-    flatpak.enable = true;
     lact.enable = true;
   };
 
@@ -183,8 +204,8 @@
   {
     isNormalUser = true;
     description = "Lhord Czedrick";
-    extraGroups = [ "networkmanager" "wheel" "video" "render" ];
-    shell = pkgs.zsh;
+    extraGroups = [ "networkmanager" "wheel" "video" "render" "i2c"];
+    shell = pkgs.fish;
     packages = with pkgs; 
     [
     #  thunderbird

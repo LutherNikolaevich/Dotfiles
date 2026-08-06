@@ -12,14 +12,10 @@
     ...
   } @ inputs: let
   in {
-    # NixOS configuration entrypoint
-    # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
-      # FIXME replace with your hostname
       nixos = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
-        # > Our main nixos configuration file <
-        modules = [./nixos/configuration.nix];
+        modules = [./configuration.nix];
       };
     };
   };
