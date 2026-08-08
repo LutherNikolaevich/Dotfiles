@@ -5,8 +5,7 @@
 { inputs, lib, config, pkgs, ... }:
 
 {
-  imports =
-  [ # Include the results of the hardware scan.
+  imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
@@ -18,8 +17,7 @@
   };
 
   # AMD GPU
-  hardware.graphics = 
-  { 
+  hardware.graphics = {
     enable = true;
     enable32Bit = true;
   };
@@ -29,8 +27,7 @@
   # Audio
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = 
-  {
+  services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
@@ -38,13 +35,8 @@
     jack.enable = true;
   };
 
-  # Auto update
-  system.autoUpgrade.enable = true;
-  system.autoUpgrade.allowReboot = true;
-
   # Bootloader.
-  boot.loader = 
-  {
+  boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
@@ -61,6 +53,9 @@
     cosmic-reader
     cosmic-wallpapers
   ];
+
+  # CPU Microcode
+  hardware.cpu.intel.updateMicrocode = true;
 
   # CUPS
   services.printing.enable = false;
@@ -84,28 +79,25 @@
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-cosmic ];
 
   # Fonts
-  fonts.packages = with pkgs;
-  [
+  fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     corefonts
   ];
 
   # Garbage collector
-  nix.gc = 
-  {
+  nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 7d";
   };
   nix.optimise.automatic = true;
 
-  # GTK and Qt
+  # GTK
   programs.dconf = {
     enable = true;
     profiles = {
       user = {
-        databases = [
-          {
+        databases = [ {
             settings = {
               "org/gnome/desktop/interface" = {
                 color-scheme = "prefer-dark";
@@ -115,11 +107,6 @@
         ];
       };
     };
-  };
-  environment.sessionVariables = {
-  QT_STYLE_OVERRIDE = "adwaita-dark";
-    # for Qt6 specifically if adwaita-dark doesn't apply:
-    # QT_QPA_PLATFORMTHEME = "gtk3"; 
   };
 
   # Hostname
@@ -132,8 +119,7 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # List packages installed in system profile. To search, run: nix search wget
-  environment.systemPackages = with pkgs; 
-  [
+  environment.systemPackages = with pkgs; [
     android-tools
     brave
     celluloid
@@ -182,8 +168,7 @@
   security.polkit.enable = true;
 
   # Services
-  services = 
-  {
+  services = {
     lact.enable = true;
   };
 
@@ -191,30 +176,26 @@
   time.timeZone = "Asia/Manila";
 
   # Udev Rules
-  services.udev.extraRules = 
-  ''
+  services.udev.extraRules = ''
     # MCHOSE Jet75-II Keyboard (Vendor: 41e4, Product: 211a)
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="41e4", ATTRS{idProduct}=="211a", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
     # VXE R1 (Vendor: 373b, Product: 1085)
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="373b", ATTRS{idProduct}=="1085", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
   '';
 
-  # User account. Don't forget to set a password with ‘passwd’.
-  users.users."czeux" = 
-  {
+  # User account
+  users.users."czeux" = {
     isNormalUser = true;
     description = "Lhord Czedrick";
     extraGroups = [ "networkmanager" "wheel" "video" "render" "i2c"];
     shell = pkgs.fish;
-    packages = with pkgs; 
-    [
+    packages = with pkgs; [
     #  thunderbird
     ];
   };
 
   # Zram
-  zramSwap = 
-  {
+  zramSwap = {
     enable = true;
     priority = 100;
     algorithm = "lz4";
