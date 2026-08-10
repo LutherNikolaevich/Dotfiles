@@ -10,43 +10,45 @@
   ];
 
   # Allow unfree packages
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-    };
-  };
+  nixpkgs.config.allowUnfree = true;
 
   # AMD GPU
+  environment.variables = { ROC_ENABLE_PRE_VEGA = "1"; };
+  hardware.amdgpu = {
+    initrd.enable = true;
+    opencl.enable = true;
+  };
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
   };
-  hardware.amdgpu.opencl.enable = true;
-  environment.variables = { ROC_ENABLE_PRE_VEGA = "1"; };
 
   # Audio
-  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
+  services = {
+    pulseaudio.enable = false;
+    pipewire = {
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      enable = true;
+      jack.enable = true;
+      pulse.enable = true;
+    };
   };
-
-  # Bootloader.
+  
+  # Bootloader
   boot.loader = {
-    systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
+    systemd-boot = {
+      enable = true;
+      consoleMode = "keep";
+    };
   };
 
   # CPU Microcode
   hardware.cpu.intel.updateMicrocode = true;
 
   # CUPS
-  services.printing.browsing = false;
-  services.printing.enable = false;
   services.printing.webInterface = false;
 
   # Gamemode
@@ -58,31 +60,15 @@
   # Firewall.
   networking.firewall.enable = false;
 
-  # Fish
-  programs.fish = {
-    enable = true;
-    interactiveShellInit = ''
-      set fish_greeting # Disable greeting
-    '';
-  };
-
   # Flatpak
   services.flatpak.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-cosmic ];
+  xdg.portal.enable = true;
 
   # Fonts
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     corefonts
   ];
-
-  # Garbage collector
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-  nix.optimise.automatic = true;
 
   # Hostname
   networking.hostName = "nixos";
@@ -119,11 +105,6 @@
     curl
     ddcutil
     fastfetch
-    fishPlugins.done
-    fishPlugins.forgit
-    fishPlugins.fzf-fish
-    fishPlugins.grc
-    fishPlugins.hydro
     fzf
     git
     grc
@@ -141,6 +122,7 @@
     uget
     vscode
     wget
+    zsh-powerlevel10k
   ];
 
   # Locale
@@ -155,8 +137,22 @@
   # Networking
   networking.networkmanager.enable = true;
 
-  # Nixos
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # NixOS
+  nix.gc = {
+    automatic = true;
+    dates = "weekly 06:00";
+    options = "--delete-older-than 7d";
+    persistent = true;
+  };
+  nix.optimise = {
+    automatic = true;
+    dates = "weekly 06:00";
+    persistent = true;
+  };
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    auto-optimise-store = true;
+  };
 
   # Polkit
   security.polkit.enable = true;
@@ -167,7 +163,7 @@
   };
 
   # Steam
-    programs.steam = {
+  programs.steam = {
     enable = true;
   };
 
@@ -187,7 +183,7 @@
     isNormalUser = true;
     description = "Lhord Czedrick";
     extraGroups = [ "networkmanager" "wheel" "video" "render" "i2c"];
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -199,6 +195,26 @@
     priority = 100;
     algorithm = "lz4";
     memoryPercent = 50;
+  };
+
+  # Zsh
+  programs.zsh = {
+    autosuggestions.enable = true;
+    enable = true;
+    enableBashCompletion = true;
+    syntaxHighlighting.enable = true;
+    ohMyZsh = {
+      enable = true;
+      plugins = [
+        "fzf"
+        "git"
+        "z"
+      ];
+    };
+    promptInit = ''
+      source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+      [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+    '';
   };
 
   # This value determines the NixOS release from which the default
