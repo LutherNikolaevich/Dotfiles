@@ -41,24 +41,16 @@
     efi.canTouchEfiVariables = true;
   };
 
-  # Cosmic desktop environment
-  services.displayManager.cosmic-greeter.enable = true;
-  services.desktopManager.cosmic.enable = true;
-  services.system76-scheduler.enable = true;
-  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
-  environment.cosmic.excludePackages = with pkgs; [
-    cosmic-edit
-    cosmic-term
-    cosmic-player
-    cosmic-reader
-    cosmic-wallpapers
-  ];
-
   # CPU Microcode
   hardware.cpu.intel.updateMicrocode = true;
 
   # CUPS
+  services.printing.browsing = false;
   services.printing.enable = false;
+  services.printing.webInterface = false;
+
+  # Gamemode
+  programs.gamemode.enable = true;
 
   # DDC/CI
   hardware.i2c.enable = true;
@@ -92,37 +84,38 @@
   };
   nix.optimise.automatic = true;
 
-  # GTK
-  programs.dconf = {
-    enable = true;
-    profiles = {
-      user = {
-        databases = [ {
-            settings = {
-              "org/gnome/desktop/interface" = {
-                color-scheme = "prefer-dark";
-              };
-            };
-          }
-        ];
-      };
-    };
-  };
-
   # Hostname
   networking.hostName = "nixos";
 
-  # KDE connect
+  # KDE
   programs.kdeconnect.enable = true;
-  
+  services = {
+    desktopManager.plasma6.enable = true;
+    displayManager.plasma-login-manager.enable = true;
+  };
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [
+    elisa
+    kate
+    khelpcenter
+    konsole
+    ktexteditor
+    kwin-x11
+    kwrited
+    okular
+    plasma-browser-integration
+    plasma-workspace-wallpapers
+    print-manager
+    qrca
+  ];
+
   # Kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # List packages installed in system profile. To search, run: nix search wget
   environment.systemPackages = with pkgs; [
     android-tools
+    bottles
     brave
-    celluloid
     curl
     ddcutil
     fastfetch
@@ -134,6 +127,7 @@
     fzf
     git
     grc
+    haruna
     kitty
     lact
     localsend
@@ -142,7 +136,7 @@
     onlyoffice-desktopeditors
     opencode
     polkit
-    qview
+    protonplus
     songrec
     uget
     vscode
@@ -170,6 +164,11 @@
   # Services
   services = {
     lact.enable = true;
+  };
+
+  # Steam
+    programs.steam = {
+    enable = true;
   };
 
   # Time zone.
