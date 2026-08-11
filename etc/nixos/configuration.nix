@@ -51,9 +51,6 @@
   # CUPS
   services.printing.webInterface = false;
 
-  # Gamemode
-  programs.gamemode.enable = true;
-
   # DDC/CI
   hardware.i2c.enable = true;
 
@@ -74,7 +71,6 @@
   networking.hostName = "nixos";
 
   # KDE
-  programs.kdeconnect.enable = true;
   services = {
     desktopManager.plasma6.enable = true;
     displayManager.plasma-login-manager.enable = true;
@@ -154,17 +150,32 @@
     auto-optimise-store = true;
   };
 
+  # OBS Studio
+  programs.obs-studio = {
+    enable = true;
+    plugins = with pkgs.obs-studio-plugins; [
+      obs-backgroundremoval
+      obs-gstreamer
+      obs-pipewire-audio-capture
+      obs-vaapi # AMD hardware acceleration
+      obs-vkcapture
+      wlrobs
+    ];
+  };
+
   # Polkit
   security.polkit.enable = true;
 
+  # Programs
+  programs = {
+    gamemode.enable = true;
+    kdeconnect.enable = true;
+    steam.enable = true;
+  };
+  
   # Services
   services = {
     lact.enable = true;
-  };
-
-  # Steam
-  programs.steam = {
-    enable = true;
   };
 
   # Time zone.
