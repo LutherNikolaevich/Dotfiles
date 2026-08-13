@@ -98,22 +98,21 @@
     android-tools
     bottles
     brave
+    btop
     curl
     ddcutil
     fastfetch
     fzf
-    git
     grc
     haruna
     kitty
-    lact
-    localsend
     nodejs
     obsidian
     onlyoffice-desktopeditors
     opencode
     polkit
     protonplus
+    qbittorrent
     songrec
     uget
     vscode
@@ -169,10 +168,12 @@
   # Programs
   programs = {
     gamemode.enable = true;
+    git.enable = true;
     kdeconnect.enable = true;
+    localsend.enable = true;
     steam.enable = true;
   };
-  
+
   # Services
   services = {
     lact.enable = true;
@@ -185,7 +186,7 @@
   services.udev.extraRules = ''
     # MCHOSE Jet75-II Keyboard (Vendor: 41e4, Product: 211a)
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="41e4", ATTRS{idProduct}=="211a", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
-    # VXE R1 (Vendor: 373b, Product: 1085)
+    # VXE R1 Mouse (Vendor: 373b, Product: 1085)
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="373b", ATTRS{idProduct}=="1085", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
   '';
 
@@ -196,7 +197,7 @@
     extraGroups = [ "networkmanager" "wheel" "video" "render" "i2c"];
     shell = pkgs.zsh;
     packages = with pkgs; [
-    #  thunderbird
+    #  firefox
     ];
   };
 
