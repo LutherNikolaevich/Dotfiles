@@ -115,7 +115,7 @@
     uget
     unstable.nodejs
     unstable.opencode
-    vscode
+    unstable.vscode
     wget
     wl-clipboard
     zsh-powerlevel10k
