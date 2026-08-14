@@ -106,17 +106,18 @@
     grc
     haruna
     kitty
-    nodejs
     obsidian
     onlyoffice-desktopeditors
-    opencode
     polkit
     protonplus
     qbittorrent
     songrec
     uget
+    unstable.nodejs
+    unstable.opencode
     vscode
     wget
+    wl-clipboard
     zsh-powerlevel10k
   ];
 
